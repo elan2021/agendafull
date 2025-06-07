@@ -5,6 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from sqlalchemy.orm import joinedload # Import for eager loading
 import os
+# Ensure datetime, timedelta, time are imported if not already (they are used in api_create_agendamento)
+from datetime import datetime, timedelta, time
+
 
 app = Flask(__name__)
 
@@ -194,20 +197,18 @@ def register():
         try:
             db.session.add(new_empresa)
             db.session.commit()
-
-            # Store info in session
+            # Store info in session after successful commit
+            session['empresa_id'] = new_empresa.id
+            session['nome_proprietario'] = new_empresa.nome_proprietario
+            session['nome_da_loja'] = new_empresa.nome_loja
+            session['imagem_perfil'] = new_empresa.imagem_perfil
+            flash('Cadastro realizado com sucesso!', 'success')
+            return redirect(url_for('dashboard'))
         except IntegrityError as e: # Catching unique constraint violations specifically
             db.session.rollback()
             # This typically means username or domain already exists, handled above, but good for other potential unique fields.
             flash('Erro de integridade de dados. Nome de usuário ou domínio pode já existir.', 'danger')
             return render_template('login.html', form_type='register', form_data=request.form)
-            session['empresa_id'] = new_empresa.id
-            session['nome_proprietario'] = new_empresa.nome_proprietario
-            session['nome_da_loja'] = new_empresa.nome_loja
-            session['imagem_perfil'] = new_empresa.imagem_perfil
-
-            flash('Cadastro realizado com sucesso!', 'success')
-            return redirect(url_for('dashboard'))
         except Exception as e:
             db.session.rollback()
             flash(f'Erro ao registrar empresa: {str(e)}', 'danger')
@@ -558,7 +559,7 @@ def all_servicos():
 # --- End Servicos Routes ---
 
 # --- Horarios Route ---
-from datetime import datetime
+from datetime import datetime, timedelta, time # Ensure timedelta and time are imported
 
 def time_from_string(time_str):
     if not time_str:
@@ -650,7 +651,6 @@ def horarios():
                         horario_existente.horario_termino_almoco = None
                         horario_existente.pausa_entre_atendimentos = None
                     else:
-                        horario_existente.horario_inicio_trabalho = time_from_string(h_inicio_trabalho_str)
                         # Input validation for times and pause
                         valid_times = True
                         h_inicio_trabalho_obj = time_from_string(h_inicio_trabalho_str)
@@ -658,7 +658,7 @@ def horarios():
                         h_inicio_almoco_obj = time_from_string(h_inicio_almoco_str)
                         h_termino_almoco_obj = time_from_string(h_termino_almoco_str)
 
-                        if not dia_folga:
+                        if not dia_folga: # This inner check for dia_folga is redundant due to outer if/else
                             if not h_inicio_trabalho_obj or not h_termino_trabalho_obj:
                                 flash(f'Dia {i+1}: Horário de início e término de trabalho são obrigatórios se não for dia de folga.', 'danger')
                                 valid_times = False
@@ -672,8 +672,8 @@ def horarios():
                             if not h_inicio_almoco_obj and h_termino_almoco_obj:
                                 flash(f'Dia {i+1}: Horário de início do almoço é obrigatório se o término do almoço for preenchido.', 'danger')
                                 valid_times = False
-                            if h_inicio_almoco_obj and h_termino_almoco_obj:
-                                if not (h_inicio_trabalho_obj <= h_inicio_almoco_obj < h_termino_almoco_obj <= h_termino_trabalho_obj):
+                            if h_inicio_almoco_obj and h_termino_almoco_obj: # Check if h_inicio_trabalho_obj is not None
+                                if not (h_inicio_trabalho_obj and h_termino_trabalho_obj and h_inicio_trabalho_obj <= h_inicio_almoco_obj < h_termino_almoco_obj <= h_termino_trabalho_obj):
                                     flash(f'Dia {i+1}: Horários de almoço devem estar dentro do expediente e o término após o início.', 'danger')
                                     valid_times = False
 
@@ -685,12 +685,7 @@ def horarios():
                             else:
                                 pausa_int = int(pausa_str)
 
-                        if not valid_times: # If any validation for this day failed, skip saving this day and continue to next
-                            # Potentially rollback if any previous day was added in this transaction, or handle all at once
-                            # For now, this might lead to partial saves if not careful. Better to validate all first.
-                            # However, the current structure iterates and saves.
-                            # To prevent partial saves, collect all Horario objects first, then validate all, then add/commit all.
-                            # For this iteration, we'll accept the risk of partial save on day-specific error, and rely on user to fix.
+                        if not valid_times: # If any validation for this day failed
                             db.session.rollback() # Rollback to avoid partial save for this day at least
                             # Re-fetch original data to display
                             horarios_db_orig = Horario.query.filter_by(profissional_id=prof_to_save.id).all()
@@ -778,6 +773,7 @@ def agendamentos():
 # --- API Endpoints ---
 from functools import wraps
 from flask import jsonify
+# Ensure timedelta and time are available for API endpoints too (already imported at top for Horarios route)
 
 def empresa_required_api(f):
     @wraps(f)
@@ -819,10 +815,6 @@ def api_list_servicos():
 @empresa_required_api
 def api_get_disponibilidade():
     empresa_id = session['empresa_id']
-
-    profissional_id_str = request.args.get('profissional_id')
-    data_str = request.args.get('data') # YYYY-MM-DD
-    servico_id_str = request.args.get('servico_id')
 
     profissional_id_str = request.args.get('profissional_id')
     data_str = request.args.get('data') # YYYY-MM-DD
@@ -954,9 +946,6 @@ def api_register_cliente():
         db.session.add(new_cliente)
         db.session.commit()
         # Return the created client data, including its new ID
-    except IntegrityError:
-        db.session.rollback()
-        return jsonify({'error': 'Conflict', 'message': 'Erro de integridade. Telefone pode já existir para esta empresa ou outro valor único violado.'}), 409
         return jsonify({
             'id': new_cliente.id,
             'empresa_id': new_cliente.empresa_id,
@@ -964,6 +953,9 @@ def api_register_cliente():
             'telefone': new_cliente.telefone,
             'valor_gasto': new_cliente.valor_gasto
         }), 201 # 201 Created
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({'error': 'Conflict', 'message': 'Erro de integridade. Telefone pode já existir para esta empresa ou outro valor único violado.'}), 409
     except Exception as e:
         db.session.rollback()
         # Log error e
@@ -1096,9 +1088,6 @@ def api_create_agendamento():
         db.session.add(novo_agendamento)
         db.session.commit()
         return jsonify({
-    except IntegrityError: # Should not happen if availability check is robust, but good for other constraints
-        db.session.rollback()
-        return jsonify({'error': 'Conflict', 'message': 'Erro de integridade de dados ao salvar agendamento.'}), 409
             'id': novo_agendamento.id,
             'servico_id': novo_agendamento.servico_id,
             'cliente_id': novo_agendamento.cliente_id,
@@ -1109,6 +1098,9 @@ def api_create_agendamento():
             'valor_total': novo_agendamento.valor_total,
             'status': novo_agendamento.status
         }), 201
+    except IntegrityError: # Should not happen if availability check is robust, but good for other constraints
+        db.session.rollback()
+        return jsonify({'error': 'Conflict', 'message': 'Erro de integridade de dados ao salvar agendamento.'}), 409
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Database error', 'message': f'Erro ao criar agendamento: {str(e)}'}), 500
@@ -1192,3 +1184,5 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all() # Create sql tables for our data models if they don't already exist
     app.run(debug=True, port=5000)
+
+[end of midas_pdv/app.py]
