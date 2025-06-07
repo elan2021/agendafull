@@ -1,0 +1,139 @@
+<html><head>
+        <meta charset="utf-8"/>
+        <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+        <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B600%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+        <title>Configurar Horários - MidasPDV</title>
+        <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <style>
+              .day-card-container {
+                display: none;
+              }
+              .day-card-checkbox:checked ~ .day-card-container {
+                display: flex;
+              }
+              .day-off-checkbox:checked ~ .day-card-fields {
+                display: none;
+              }
+            </style>
+        </head>
+        <body class="bg-slate-50">
+        <div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden" style="--checkbox-tick-svg: url('data:image/svg+xml,%3csvg viewBox=%270 0 16 16%27 fill=%27rgb(255,255,255)%27 xmlns=%27http://www.w3.org/2000/svg%27%3e%3cpath d=%27M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z%27/%3e%3c/svg%3e'); --select-button-svg: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(117,117,117)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e'); font-family: &quot;Plus Jakarta Sans&quot;, &quot;Noto Sans&quot;, sans-serif;">
+        <div class="layout-container flex h-full grow flex-col items-center">
+        <div class="px-4 py-10 sm:px-6 lg:px-8 flex flex-1 w-full justify-center">
+        <form class="layout-content-container flex flex-col max-w-3xl flex-1 gap-8" method="POST" action="{{ url_for('horarios') }}">
+        <div class="flex flex-col items-start gap-2">
+        <h1 class="text-slate-900 text-3xl font-bold leading-tight">Horários</h1>
+        <p class="text-slate-600 text-base font-normal">Configure os horários de atendimento para cada profissional.</p>
+        </div>
+        <div class="flex flex-col gap-4">
+        <label class="flex flex-col gap-1.5 w-full sm:max-w-xs">
+        <span class="text-slate-800 text-sm font-medium">Profissional</span>
+        <select name="profissional_id" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 focus:outline-0 focus:ring-2 focus:ring-black border border-slate-300 bg-white focus:border-black h-11 placeholder:text-slate-400 px-3 py-2.5 text-sm font-normal bg-[image:--select-button-svg] appearance-none" required onchange="this.form.submit()">
+        <option value="">Selecione o profissional</option>
+        {% for p in profissionais %}
+        <option value="{{ p.id }}" {% if selected_profissional_id == p.id %}selected{% endif %}>{{ p.nome_profissional }}</option>
+        {% endfor %}
+        </select>
+        </label>
+        </div>
+
+        {% if selected_profissional_id %}
+        <div class="grid grid-cols-1 gap-6">
+        {% set dias = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'] %}
+        {% set dias_value = ['0', '1', '2', '3', '4', '5', '6'] %}
+        {% for i in range(7) %}
+        {% set horario_dia = horarios_profissional.get(dias_value[i]) or {} %}
+        <div class="flex flex-col rounded-xl border border-slate-200 bg-white shadow-sm">
+        <input class="day-card-checkbox hidden" id="{{ dias[i]|lower|replace('ç', 'c')|replace('á', 'a')|replace('é', 'e') }}-toggle" type="checkbox" {% if horario_dia %}checked{% endif %}/>
+        <label class="flex cursor-pointer items-center justify-between p-4 sm:p-6" for="{{ dias[i]|lower|replace('ç', 'c')|replace('á', 'a')|replace('é', 'e') }}-toggle">
+        <div class="flex flex-col">
+        <h2 class="text-slate-900 text-lg font-semibold">{{ dias[i] }}</h2>
+        <p class="text-slate-500 text-sm">Defina os horários para este dia.</p>
+        </div>
+        <span class="material-icons text-slate-500 expand-icon">expand_more</span>
+        </label>
+        <div class="day-card-container flex-col px-4 sm:px-6 pb-6 gap-6">
+        <input type="hidden" name="dia_semana_{{ i }}" value="{{ dias_value[i] }}">
+        <div class="flex items-center justify-between border-t border-slate-200 pt-6">
+        <p class="text-slate-700 text-sm font-medium">Dia de Folga</p>
+        <input name="dia_folga_{{ i }}" class="day-off-checkbox h-5 w-5 rounded border-slate-300 border-2 bg-transparent text-black checked:bg-black checked:border-black checked:bg-[image:--checkbox-tick-svg] focus:ring-0 focus:ring-offset-0 focus:border-black focus:outline-none" id="{{ dias[i]|lower }}-folga" type="checkbox" value="true" {% if horario_dia.dia_folga %}checked{% endif %}/>
+        </div>
+        <div class="day-card-fields flex flex-col gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <label class="flex flex-col gap-1.5">
+        <span class="text-slate-800 text-sm font-medium">Horário de Trabalho - Início</span>
+        <input name="horario_inicio_trabalho_{{ i }}" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 focus:outline-0 focus:ring-2 focus:ring-black border border-slate-300 bg-white focus:border-black h-11 placeholder:text-slate-400 px-3 py-2.5 text-sm font-normal" type="time" value="{{ horario_dia.horario_inicio_trabalho.strftime('%H:%M') if horario_dia.horario_inicio_trabalho else '' }}"/>
+        </label>
+        <label class="flex flex-col gap-1.5">
+        <span class="text-slate-800 text-sm font-medium">Horário de Trabalho - Término</span>
+        <input name="horario_termino_trabalho_{{ i }}" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 focus:outline-0 focus:ring-2 focus:ring-black border border-slate-300 bg-white focus:border-black h-11 placeholder:text-slate-400 px-3 py-2.5 text-sm font-normal" type="time" value="{{ horario_dia.horario_termino_trabalho.strftime('%H:%M') if horario_dia.horario_termino_trabalho else '' }}"/>
+        </label>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <label class="flex flex-col gap-1.5">
+        <span class="text-slate-800 text-sm font-medium">Horário de Almoço - Início</span>
+        <input name="horario_inicio_almoco_{{ i }}" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 focus:outline-0 focus:ring-2 focus:ring-black border border-slate-300 bg-white focus:border-black h-11 placeholder:text-slate-400 px-3 py-2.5 text-sm font-normal" type="time" value="{{ horario_dia.horario_inicio_almoco.strftime('%H:%M') if horario_dia.horario_inicio_almoco else '' }}"/>
+        </label>
+        <label class="flex flex-col gap-1.5">
+        <span class="text-slate-800 text-sm font-medium">Horário de Almoço - Término</span>
+        <input name="horario_termino_almoco_{{ i }}" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 focus:outline-0 focus:ring-2 focus:ring-black border border-slate-300 bg-white focus:border-black h-11 placeholder:text-slate-400 px-3 py-2.5 text-sm font-normal" type="time" value="{{ horario_dia.horario_termino_almoco.strftime('%H:%M') if horario_dia.horario_termino_almoco else '' }}"/>
+        </label>
+        </div>
+        <div>
+        <label class="flex flex-col gap-1.5">
+        <span class="text-slate-800 text-sm font-medium">Pausa entre Atendimentos (minutos)</span>
+        <input name="pausa_entre_atendimentos_{{ i }}" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 focus:outline-0 focus:ring-2 focus:ring-black border border-slate-300 bg-white focus:border-black h-11 placeholder:text-slate-400 px-3 py-2.5 text-sm font-normal" placeholder="Ex: 15" type="number" value="{{ horario_dia.pausa_entre_atendimentos if horario_dia.pausa_entre_atendimentos is not none else '' }}"/>
+        </label>
+        </div>
+        </div>
+        </div>
+        </div>
+        {% endfor %}
+        </div>
+        <input type="hidden" name="selected_profissional_id_hidden_field" value="{{ selected_profissional_id }}">
+        <div class="flex justify-end pt-4">
+        <button class="flex items-center justify-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2" type="submit" name="action" value="save_horarios">
+        <span class="material-icons text-base">save</span>
+                        Salvar Horários
+                      </button>
+        </div>
+        {% endif %}
+        </form>
+        </div>
+        </div>
+        </div>
+        <script>
+          function reinitializeHorariosScripts() {
+              const dayCardCheckboxes = document.querySelectorAll(".day-card-checkbox");
+              dayCardCheckboxes.forEach((checkbox) => {
+                const icon = checkbox.nextElementSibling.querySelector(".expand-icon");
+                function updateIcon() {
+                  if (checkbox.checked) {
+                    icon.textContent = "expand_less";
+                  } else {
+                    icon.textContent = "expand_more";
+                  }
+                }
+                checkbox.addEventListener("change", updateIcon);
+                updateIcon(); // Initial state
+              });
+
+              const dayOffCheckboxes = document.querySelectorAll('.day-off-checkbox');
+              dayOffCheckboxes.forEach(checkbox => {
+                const fieldsContainer = checkbox.closest('.day-card-container').querySelector('.day-card-fields');
+                function toggleFields() {
+                    if (checkbox.checked) {
+                        fieldsContainer.style.display = 'none';
+                    } else {
+                        fieldsContainer.style.display = 'flex';
+                    }
+                }
+                checkbox.addEventListener('change', toggleFields);
+                toggleFields(); // Initial state
+              });
+          }
+          document.addEventListener("DOMContentLoaded", reinitializeHorariosScripts);
+        </script>
+        </body></html>

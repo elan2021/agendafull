@@ -1,0 +1,5 @@
+# This file is intentionally left empty.
+# It serves as a placeholder to ensure that the 'static' directory,
+# which is intended to store static assets like CSS, JavaScript, and images,
+# is tracked by Git even when it's initially empty.
+# You can safely remove this file once you add actual static assets to this directory.

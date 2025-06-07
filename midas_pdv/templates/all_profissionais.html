@@ -1,0 +1,74 @@
+<html><head>
+        <meta charset="utf-8"/>
+        <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+        <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B600%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+        <title>Todos os Profissionais</title>
+        <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        </head>
+        <body class="bg-white">
+        <div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+        <div class="layout-container flex h-full grow flex-col">
+        <div class="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+        <div class="layout-content-container flex flex-col max-w-full flex-1">
+        <div class="flex flex-wrap justify-between items-center gap-4 p-4">
+        <h1 class="text-black text-3xl font-bold tracking-tight">Todos os Profissionais</h1>
+        <a href="{{ url_for('add_profissionais') }}" class="dynamic-load-link flex items-center gap-2 px-4 py-2 bg-black text-white text-sm font-medium rounded-md hover:bg-gray-800 transition-colors">
+        <span class="material-icons" style="font-size: 20px;">add</span>
+                        Novo Profissional
+                      </a>
+        </div>
+        <div class="px-4 py-3 @container">
+        <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+        <table class="w-full min-w-[1000px] table-auto">
+        <thead class="bg-gray-50">
+        <tr>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Nome</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Telefone</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Nome de Usuário</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Tipo de Comissão</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Valor Fixo</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Porcentagem</th>
+        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-700">Ações</th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+        {% for profissional in profissionais %}
+        <tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">{{ profissional.nome_profissional }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ profissional.telefone if profissional.telefone else '-' }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ profissional.nome_usuario }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+            {% if profissional.tipo_comissao == 'fixed' %}Fixo
+            {% elif profissional.tipo_comissao == 'percentage' %}Porcentagem
+            {% else %}-
+            {% endif %}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ 'R$ {:.2f}'.format(profissional.valor_fixo) if profissional.valor_fixo else '-' }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ '{:.0f}%'.format(profissional.porcentagem_comissao) if profissional.porcentagem_comissao else '-' }}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+        <div class="flex items-center space-x-3">
+        <button class="text-black hover:text-gray-700 transition-colors">
+        <span class="material-icons" style="font-size: 20px;">edit</span>
+        </button>
+        <button class="text-black hover:text-gray-700 transition-colors">
+        <span class="material-icons" style="font-size: 20px;">delete</span>
+        </button>
+        </div>
+        </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">Nenhum profissional cadastrado.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </body></html>

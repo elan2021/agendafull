@@ -1,0 +1,6 @@
+# This file is intentionally left empty.
+# It serves as a placeholder to ensure that the 'instance' directory,
+# which is used by Flask to store instance-specific data
+# (e.g., SQLite database file, configuration files),
+# is tracked by Git even when it's initially empty.
+# You can safely remove this file once actual instance data is added.

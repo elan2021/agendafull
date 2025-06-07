@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="utf-8" />
+          <title>Adicionar Profissionais</title>
+          <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+          <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+          <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+          <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+          <style>
+            .form-input {
+              transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+            .form-input:focus {
+              border-color: #000000;
+              box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+            }
+            .btn-primary {
+              background-color: #000000;
+              color: #ffffff;
+              transition: background-color 0.2s ease-in-out;
+            }
+            .btn-primary:hover {
+              background-color: #333333;
+            }
+            .toggle-switch:checked + .toggle-label .toggle-dot {
+              transform: translateX(100%);
+              background-color: #000000;
+            }
+            .toggle-switch:checked + .toggle-label {
+              background-color: #333333;
+            }
+          </style>
+        </head>
+        <body class="bg-stone-100">
+        <div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden" style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;">
+          <div class="layout-container flex h-full grow flex-col items-center justify-center">
+            <div class="px-4 sm:px-8 md:px-10 flex flex-1 justify-center py-10 w-full">
+              <div class="layout-content-container flex flex-col w-full max-w-xl py-8 px-6 sm:px-8 md:px-10 bg-white shadow-2xl rounded-xl">
+                <div class="text-center mb-8">
+                  <h1 class="text-slate-900 text-3xl sm:text-4xl font-bold tracking-tight">Adicionar Profissionais</h1>
+                </div>
+                <form class="space-y-6" method="post" action="{{ url_for('add_profissionais') }}">
+                  <div>
+                    <label class="block text-sm font-medium leading-6 text-slate-900 pb-1.5" for="professionalName">Nome do profissional</label>
+                    <input class="form-input block w-full rounded-lg border-stone-300 bg-stone-50 py-3 px-4 text-slate-900 placeholder:text-stone-400 focus:border-black focus:ring-black sm:text-sm sm:leading-6" id="professionalName" name="professionalName" placeholder="Ex: João Silva" type="text" required/>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium leading-6 text-slate-900 pb-1.5" for="phone">Telefone</label>
+                    <input class="form-input block w-full rounded-lg border-stone-300 bg-stone-50 py-3 px-4 text-slate-900 placeholder:text-stone-400 focus:border-black focus:ring-black sm:text-sm sm:leading-6" id="phone" name="phone" placeholder="Ex: (11) 99999-9999" type="tel"/>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium leading-6 text-slate-900 pb-1.5" for="username">Nome de usuário</label>
+                    <input class="form-input block w-full rounded-lg border-stone-300 bg-stone-50 py-3 px-4 text-slate-900 placeholder:text-stone-400 focus:border-black focus:ring-black sm:text-sm sm:leading-6" id="username" name="username" placeholder="Ex: joao.silva" type="text" required/>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium leading-6 text-slate-900 pb-1.5" for="password">Senha</label>
+                    <input class="form-input block w-full rounded-lg border-stone-300 bg-stone-50 py-3 px-4 text-slate-900 placeholder:text-stone-400 focus:border-black focus:ring-black sm:text-sm sm:leading-6" id="password" name="password" placeholder="Crie uma senha segura" type="password" required/>
+                  </div>
+                  <div class="flex items-center justify-between py-2">
+                    <span class="text-sm font-medium text-slate-900">Adicionar Comissão?</span>
+                    <label class="relative inline-flex cursor-pointer items-center">
+                      <input class="toggle-switch sr-only peer" id="commissionToggle" name="commissionToggle" type="checkbox"/>
+                      <div class="toggle-label h-7 w-12 rounded-full bg-stone-200 after:absolute after:start-[4px] after:top-[4px] after:h-5 after:w-5 after:rounded-full after:border after:border-stone-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-black peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-offset-1 peer-focus:ring-black toggle-dot"></div>
+                    </label>
+                  </div>
+                  <div class="space-y-6" id="commissionFields" style="display: none;">
+                    <div>
+                      <label class="block text-sm font-medium leading-6 text-slate-900 pb-1.5" for="commissionType">Tipo de Comissão</label>
+                      <select class="form-input block w-full rounded-lg border-stone-300 bg-stone-50 py-3 px-4 text-slate-900 focus:border-black focus:ring-black sm:text-sm sm:leading-6 appearance-none bg-[image:--select-button-svg] bg-no-repeat bg-[center_right_1rem]" id="commissionType" name="commissionType">
+                        <option value="">Selecione o tipo</option>
+                        <option value="fixed">Valor Fixo</option>
+                        <option value="percentage">Porcentagem</option>
+                      </select>
+                    </div>
+                    <div class="hidden" id="fixedValueField">
+                      <label class="block text-sm font-medium leading-6 text-slate-900 pb-1.5" for="fixedValue">Valor Fixo (R$)</label>
+                      <input class="form-input block w-full rounded-lg border-stone-300 bg-stone-50 py-3 px-4 text-slate-900 placeholder:text-stone-400 focus:border-black focus:ring-black sm:text-sm sm:leading-6" id="fixedValue" name="fixedValue" placeholder="Ex: 50.00" step="0.01" type="number"/>
+                    </div>
+                    <div class="hidden" id="percentageField">
+                      <label class="block text-sm font-medium leading-6 text-slate-900 pb-1.5" for="percentage">Porcentagem (%)</label>
+                      <input class="form-input block w-full rounded-lg border-stone-300 bg-stone-50 py-3 px-4 text-slate-900 placeholder:text-stone-400 focus:border-black focus:ring-black sm:text-sm sm:leading-6" id="percentage" name="percentage" placeholder="Ex: 10" type="number"/>
+                    </div>
+                  </div>
+                  <div class="pt-4">
+                    <button class="btn-primary flex w-full justify-center rounded-lg py-3 px-4 text-sm font-semibold shadow-sm hover:bg-opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black" type="submit">
+                      Adicionar Profissional
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          function reinitializeAddProfissionaisScripts() {
+            const commissionToggle = document.getElementById('commissionToggle');
+            const commissionFields = document.getElementById('commissionFields');
+            const commissionType = document.getElementById('commissionType');
+            const fixedValueField = document.getElementById('fixedValueField');
+            const percentageField = document.getElementById('percentageField');
+
+            if (commissionToggle) {
+                commissionToggle.addEventListener('change', function () {
+                  if (this.checked) {
+                    commissionFields.style.display = 'block';
+                  } else {
+                    commissionFields.style.display = 'none';
+                    if(commissionType) commissionType.value = '';
+                    if(fixedValueField) fixedValueField.classList.add('hidden');
+                    if(percentageField) percentageField.classList.add('hidden');
+                  }
+                });
+            }
+
+            if (commissionType) {
+                commissionType.addEventListener('change', function () {
+                  if (this.value === 'fixed') {
+                    if(fixedValueField) fixedValueField.classList.remove('hidden');
+                    if(percentageField) percentageField.classList.add('hidden');
+                  } else if (this.value === 'percentage') {
+                    if(percentageField) percentageField.classList.remove('hidden');
+                    if(fixedValueField) fixedValueField.classList.add('hidden');
+                  } else {
+                    if(fixedValueField) fixedValueField.classList.add('hidden');
+                    if(percentageField) percentageField.classList.add('hidden');
+                  }
+                });
+            }
+            // Trigger change events if needed for initial state
+            if (commissionToggle && commissionToggle.checked) {
+                commissionFields.style.display = 'block';
+            }
+            if (commissionType && commissionType.value) {
+                commissionType.dispatchEvent(new Event('change'));
+            }
+          }
+          document.addEventListener("DOMContentLoaded", reinitializeAddProfissionaisScripts);
+        </script>
+        </body>
+        </html>

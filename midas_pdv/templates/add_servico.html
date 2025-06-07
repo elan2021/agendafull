@@ -1,0 +1,146 @@
+<html><head>
+        <meta charset="utf-8"/>
+        <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+        <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B600%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+        <title>Adicionar Serviço</title>
+        <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <script>
+              tailwind.config = {
+                theme: {
+                  extend: {
+                    colors: {
+                      primary: '#000000',
+                      "primary-foreground": '#FFFFFF',
+                      muted: '#F1F5F9',
+                      "muted-foreground": '#64748B',
+                      accent: '#F1F5F9',
+                      "accent-foreground": '#0F172A',
+                      border: '#E2E8F0',
+                      input: '#E2E8F0',
+                      ring: '#000000',
+                    },
+                    borderRadius: {
+                      lg: '0.5rem',
+                      md: 'calc(0.5rem - 2px)',
+                      sm: 'calc(0.5rem - 4px)',
+                    },
+                    fontFamily: {
+                      sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                  }
+                }
+              }
+            </script>
+        <style>
+              .form-input, .form-textarea, .form-multiselect, .form-select {
+                border-color: var(--tw-pg-border-input);
+                transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+              }
+              .form-input:focus, .form-textarea:focus, .form-multiselect:focus, .form-select:focus {
+                border-color: var(--tw-pg-border-ring);
+                box-shadow: 0 0 0 1px var(--tw-pg-border-ring);
+                outline: 2px solid transparent;
+                outline-offset: 2px;
+              }
+              .switch-bg:checked {
+                background-color: #000000 !important;}
+              .switch-bg:checked + div .toggle-dot-internal { /* Changed selector for the dot */
+                transform: translateX(100%);}
+              .switch-bg:not(:checked) + div .toggle-dot-internal { /* Changed selector for the dot */
+                transform: translateX(0%);}
+            </style>
+        </head>
+        <body class="bg-muted">
+        <div class="relative flex size-full min-h-screen flex-col group/design-root" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+        <div class="flex h-full grow flex-col items-center justify-center p-6 md:p-12">
+        <div class="w-full max-w-2xl rounded-xl bg-white shadow-lg">
+        <div class="p-6 md:p-8">
+        <h1 class="text-3xl font-bold text-primary mb-8 text-center">Adicionar Serviço</h1>
+        <form class="space-y-6" method="POST" action="{{ url_for('add_servico') }}">
+        <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5" for="serviceName">Nome do Serviço</label>
+        <input class="form-input flex w-full rounded-lg border border-input bg-transparent px-4 py-3 text-sm text-primary shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="serviceName" name="serviceName" placeholder="Digite o nome do serviço" type="text" required/>
+        </div>
+        <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5" for="description">Descrição</label>
+        <textarea class="form-textarea flex w-full rounded-lg border border-input bg-transparent px-4 py-3 text-sm text-primary shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]" id="description" name="description" placeholder="Digite a descrição do serviço"></textarea>
+        </div>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5" for="duration">Duração (em minutos)</label>
+        <div class="relative">
+        <input class="form-input flex w-full rounded-lg border border-input bg-transparent pl-10 pr-4 py-3 text-sm text-primary shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="duration" name="duration" placeholder="Ex: 60" type="number" required/>
+        <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">schedule</span>
+        </div>
+        </div>
+        <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5" for="price">Preço</label>
+        <div class="relative">
+        <input class="form-input flex w-full rounded-lg border border-input bg-transparent pl-10 pr-4 py-3 text-sm text-primary shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="price" name="price" placeholder="Ex: 50.00" type="number" step="0.01" required/>
+        <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">payments</span>
+        </div>
+        </div>
+        </div>
+        <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5" for="professionals">Profissionais</label>
+        <div class="relative">
+        <select class="form-select flex w-full rounded-lg border border-input bg-transparent px-4 py-3 text-sm text-primary shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="professionals" name="professionals" multiple="" required>
+        <option disabled="" value="">Selecione os profissionais</option>
+        {% for profissional in profissionais %}
+        <option value="{{ profissional.id }}">{{ profissional.nome_profissional }}</option>
+        {% endfor %}
+        </select>
+        <span class="material-icons absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-lg pointer-events-none">arrow_drop_down</span>
+        </div>
+        <p class="text-xs text-muted-foreground mt-1">Segure Ctrl (ou Cmd em Mac) para selecionar múltiplos profissionais.</p>
+        </div>
+        <div class="flex items-center justify-between rounded-lg border border-input bg-transparent p-4 shadow-sm">
+        <label class="text-sm font-medium text-primary cursor-pointer" for="requireSignal">Exigir Sinal?</label>
+        <div class="relative inline-block w-10 h-6 align-middle select-none">
+        <input class="switch-bg absolute block w-6 h-6 rounded-full bg-muted border-4 appearance-none cursor-pointer transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" id="requireSignal" name="requireSignal" type="checkbox"/>
+        <div class="block w-10 h-6 overflow-hidden bg-gray-300 rounded-full cursor-pointer">
+        <div class="toggle-dot-internal absolute left-0 top-0 w-6 h-6 bg-white rounded-full shadow transform transition-transform duration-200 ease-in-out"></div>
+        </div>
+        </div>
+        </div>
+        <div class="hidden" id="signalPercentageSection">
+        <label class="block text-sm font-medium text-gray-700 mb-1.5" for="signalPercentage">Porcentagem do Sinal</label>
+        <div class="relative">
+        <input class="form-input flex w-full rounded-lg border border-input bg-transparent pl-10 pr-4 py-3 text-sm text-primary shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" id="signalPercentage" name="signalPercentage" max="100" min="0" placeholder="Ex: 20" type="number"/>
+        <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-lg">percent</span>
+        </div>
+        </div>
+        <div class="flex justify-end pt-4">
+        <button class="flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50" type="submit">
+        <span class="material-icons mr-2 text-lg">add_circle_outline</span>
+                          Adicionar Serviço
+                        </button>
+        </div>
+        </form>
+        </div>
+        </div>
+        </div>
+        </div>
+        <script>
+            function reinitializeAddServicoScripts() {
+              const requireSignalToggle = document.getElementById('requireSignal');
+              const signalPercentageSection = document.getElementById('signalPercentageSection');
+
+              if (requireSignalToggle && signalPercentageSection) {
+                function toggleSignalPercentage() {
+                  if (requireSignalToggle.checked) {
+                    signalPercentageSection.classList.remove('hidden');
+                  } else {
+                    signalPercentageSection.classList.add('hidden');
+                  }
+                }
+                requireSignalToggle.addEventListener('change', toggleSignalPercentage);
+                // Initial check
+                toggleSignalPercentage();
+              }
+            }
+            document.addEventListener('DOMContentLoaded', reinitializeAddServicoScripts);
+        </script>
+        </body></html>

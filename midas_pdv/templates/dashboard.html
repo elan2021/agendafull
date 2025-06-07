@@ -1,0 +1,253 @@
+<html><head>
+        <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+        <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+        <meta charset="utf-8"/>
+        <title>Midas PDV - Dashboard</title>
+        <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+        </head>
+        <body class="bg-white">
+        <div class="relative flex size-full min-h-screen flex-col group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+        <div class="layout-container flex h-full grow flex-col">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e0e0e0] px-6 py-4">
+        <div class="flex items-center gap-3 text-black">
+        <span class="material-icons text-3xl">store</span>
+        <h1 class="text-xl font-bold">{{ nome_da_loja if nome_da_loja else 'Nome da Loja' }}</h1>
+        </div>
+        <div class="flex items-center gap-4">
+        <img alt="Foto do Proprietário" class="h-10 w-10 rounded-full object-cover" src="{{ imagem_perfil if imagem_perfil else 'https://lh3.googleusercontent.com/aida-public/AB6AXuAnLypAC9P50yTS8M8KmsEaJYLlD9IESZX5T7R9MCAE7e0K8hF4YVFkZ5TI3vsyH6TD2ubdvlGGWGvGusj8sanNKSU_tWuv6_CYG3l6_6OCjtWroW3IpHUco8x5OjMZU-n68zPZcOIV44S05Hu7N3gEhc-13y31AqVeWjgOgwPFxctf21OOI0w0FU65HKQKVSKRFgoINv296bfFSHz6CkkPJXTcoVFm3PgN6OgODofo5Jx2w-URApgnUVLuJhxs8wPBCMZr7QzSnvE' }}"/>
+        <span class="text-sm font-medium text-gray-700">{{ nome_do_proprietario if nome_do_proprietario else 'Nome do Proprietário' }}</span>
+        <a href="{{ url_for('logout') }}" aria-label="Logout" class="flex items-center justify-center rounded-md p-2 text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-black">
+        <span class="material-icons">logout</span>
+        </a>
+        </div>
+        </header>
+        <div class="flex flex-1">
+        <aside class="relative flex w-64 flex-col bg-white p-4 m-2.5 rounded-lg shadow-lg transition-all duration-300 ease-in-out group/sidebar" id="sidebar">
+        <div class="flex justify-end mb-4 group-[.is-collapsed]/sidebar:justify-center">
+        <button class="hidden h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 lg:flex group-[.is-collapsed]/sidebar:rotate-180" id="desktopToggleSidebarButton">
+        <span class="material-icons text-base">chevron_left</span>
+        </button>
+        </div>
+        <nav class="flex flex-col gap-2">
+        <a aria-current="page" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-black hover:bg-gray-100 aria-[current=page]:bg-black aria-[current=page]:text-white group-[.is-collapsed]/sidebar:justify-center" href="{{ url_for('dashboard') }}">
+        <span class="material-icons">home</span>
+        <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Início</span>
+        </a>
+        <div class="group/profissionais">
+        <button class="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2.5 text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center" data-group="profissionais">
+        <div class="flex items-center gap-3">
+        <span class="material-icons">group</span>
+        <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Profissionais</span>
+        </div>
+        <span class="material-icons transition-transform duration-200 group-data-[open=true]/profissionais:rotate-180 group-[.is-collapsed]/sidebar:hidden">expand_more</span>
+        </button>
+        <div class="ml-6 mt-1 hidden flex-col gap-1 group-data-[open=true]/profissionais:flex group-[.is-collapsed]/sidebar:ml-0 group-[.is-collapsed]/sidebar:items-center">
+        <a class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center group-[.is-collapsed]/sidebar:px-0 dynamic-load-link" href="{{ url_for('add_profissionais') }}" id="add-profissionais-link">
+        <span class="material-icons text-base">add</span>
+        <span class="group-[.is-collapsed]/sidebar:hidden">Adicionar Profissional</span>
+        </a>
+        <a class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center group-[.is-collapsed]/sidebar:px-0 dynamic-load-link" href="{{ url_for('all_profissionais') }}">
+        <span class="material-icons text-base">list_alt</span>
+        <span class="group-[.is-collapsed]/sidebar:hidden">Todos os Profissionais</span>
+        </a>
+        </div>
+        </div>
+        <div class="group/servicos">
+        <button class="flex w-full items-center justify-between gap-3 rounded-md px-3 py-2.5 text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center" data-group="servicos">
+        <div class="flex items-center gap-3">
+        <span class="material-icons">cut</span>
+        <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Serviços</span>
+        </div>
+        <span class="material-icons transition-transform duration-200 group-data-[open=true]/servicos:rotate-180 group-[.is-collapsed]/sidebar:hidden">expand_more</span>
+        </button>
+        <div class="ml-6 mt-1 hidden flex-col gap-1 group-data-[open=true]/servicos:flex group-[.is-collapsed]/sidebar:ml-0 group-[.is-collapsed]/sidebar:items-center">
+        <a class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center group-[.is-collapsed]/sidebar:px-0 dynamic-load-link" href="{{ url_for('add_servico') }}">
+        <span class="material-icons text-base">add</span>
+        <span class="group-[.is-collapsed]/sidebar:hidden">Adicionar Serviço</span>
+        </a>
+        <a class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center group-[.is-collapsed]/sidebar:px-0 dynamic-load-link" href="{{ url_for('all_servicos') }}">
+        <span class="material-icons text-base">list_alt</span>
+        <span class="group-[.is-collapsed]/sidebar:hidden">Todos os Serviços</span>
+        </a>
+        </div>
+        </div>
+        <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center dynamic-load-link" href="{{ url_for('horarios') }}">
+        <span class="material-icons">schedule</span>
+        <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Horários</span>
+        </a>
+        <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center dynamic-load-link" href="{{ url_for('clientes') }}">
+        <span class="material-icons">person</span>
+        <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Clientes</span>
+        </a>
+        <a class="flex items-center gap-3 rounded-md px-3 py-2.5 text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center dynamic-load-link" href="{{ url_for('agendamentos') }}">
+        <span class="material-icons">event_available</span>
+        <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Agendamentos</span>
+        </a>
+        </nav>
+        <div class="mt-auto group-[.is-collapsed]/sidebar:flex group-[.is-collapsed]/sidebar:justify-center">
+        <a href="{{ url_for('logout') }}" class="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:w-auto group-[.is-collapsed]/sidebar:justify-center">
+        <span class="material-icons">exit_to_app</span>
+        <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Sair</span>
+        </a>
+        </div>
+        </aside>
+        <main id="main-content" class="flex-1 p-6 transition-all duration-300 ease-in-out lg:ml-0">
+        <div class="rounded-lg bg-white p-6 shadow-lg">
+        <h2 class="text-2xl font-bold text-black">Bem-vindo(a), {{ nome_do_proprietario if nome_do_proprietario else 'Usuário' }}!</h2>
+        <p class="mt-2 text-gray-600">Este é o seu painel de controle.</p>
+        </div>
+        </main>
+        <button class="fixed bottom-5 left-5 z-50 rounded-full bg-black p-3 text-white shadow-lg lg:hidden" id="mobileToggleSidebarButton">
+        <span class="material-icons">menu</span>
+        </button>
+        </div>
+        </div>
+        </div>
+        <script>
+            const sidebar = document.getElementById('sidebar');
+            const mobileToggleSidebarButton = document.getElementById('mobileToggleSidebarButton');
+            const desktopToggleSidebarButton = document.getElementById('desktopToggleSidebarButton');
+            const mainContent = document.getElementById('main-content');
+            function toggleSidebar(isMobile) {
+              const isCollapsed = sidebar.classList.contains('is-collapsed');
+              if (isMobile) {
+                sidebar.classList.toggle('w-64', isCollapsed);
+                sidebar.classList.toggle('w-0', !isCollapsed);
+                sidebar.classList.toggle('p-4', isCollapsed);
+                sidebar.classList.toggle('p-0', !isCollapsed);
+                sidebar.classList.toggle('opacity-100', isCollapsed);
+                sidebar.classList.toggle('opacity-0', !isCollapsed);
+                sidebar.classList.toggle('is-collapsed', !isCollapsed);
+                const navItems = sidebar.querySelectorAll('nav > *, nav div > *');
+                navItems.forEach(item => {
+                  item.classList.toggle('hidden', !isCollapsed);
+                });
+              } else {
+                sidebar.classList.toggle('w-64', isCollapsed);
+                sidebar.classList.toggle('w-20', !isCollapsed);
+                sidebar.classList.toggle('is-collapsed', !isCollapsed);
+                mainContent.classList.toggle('ml-64', isCollapsed && window.innerWidth >= 1024);
+                mainContent.classList.toggle('ml-20', !isCollapsed && window.innerWidth >= 1024);
+                if (!isCollapsed) {
+                  const openAccordionButtons = sidebar.querySelectorAll('button[data-group][aria-expanded="true"]');
+                  openAccordionButtons.forEach(button => {
+                    const groupName = button.dataset.group;
+                    const content = document.querySelector(\`div.group-data-\\[open\\=true\\\]\\/\${groupName}\\:flex\`);
+                    const parentGroup = button.closest('div');
+                    parentGroup.setAttribute('data-open', 'false');
+                    button.setAttribute('aria-expanded', 'false');
+                  });
+                }
+              }
+            }
+            if (mobileToggleSidebarButton) {
+              mobileToggleSidebarButton.addEventListener('click', () => toggleSidebar(true));
+            }
+            if (desktopToggleSidebarButton) {
+              desktopToggleSidebarButton.addEventListener('click', () => toggleSidebar(false));
+            }
+            const accordionButtons = document.querySelectorAll('aside button[data-group]');
+        accordionButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            if (sidebar.classList.contains('is-collapsed') && window.innerWidth >= 1024) {
+              toggleSidebar(false);
+            }
+                const groupName = button.dataset.group;
+                const parentGroup = button.closest('div');
+            const isOpen = parentGroup.getAttribute('data-open') === 'true';
+            parentGroup.setAttribute('data-open', isOpen ? 'false' : 'true');
+            button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+          });
+        });
+            function adjustSidebarForScreenSize() {
+              const isMobile = window.innerWidth < 1024;
+              const isSidebarCurrentlyMobileHidden = sidebar.classList.contains('w-0') && sidebar.classList.contains('opacity-0');
+              if (isMobile) {
+                if (!sidebar.classList.contains('is-collapsed') && !isSidebarCurrentlyMobileHidden) {
+                  toggleSidebar(true);
+                }
+                mainContent.classList.remove('ml-64', 'ml-20');
+              } else {
+                if (isSidebarCurrentlyMobileHidden) {
+                  sidebar.classList.remove('w-0', 'p-0', 'opacity-0', 'is-collapsed');
+                  sidebar.classList.add('w-64', 'p-4', 'opacity-100');
+                  mainContent.classList.add('ml-64');
+                  const navItems = sidebar.querySelectorAll('nav > *, nav div > *');
+                  navItems.forEach(item => item.classList.remove('hidden'));
+                } else if (sidebar.classList.contains('is-collapsed')) {
+                  mainContent.classList.remove('ml-64');
+                  mainContent.classList.add('ml-20');
+                } else {
+                  mainContent.classList.remove('ml-20');
+                  mainContent.classList.add('ml-64');
+                }
+              }
+            }
+            window.addEventListener('load', adjustSidebarForScreenSize);
+            window.addEventListener('resize', adjustSidebarForScreenSize);
+            adjustSidebarForScreenSize();
+
+            const dynamicLoadLinks = document.querySelectorAll('.dynamic-load-link');
+            const mainContentArea = document.getElementById('main-content');
+
+            dynamicLoadLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const url = this.href;
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(\`HTTP error! status: \${response.status}\`);
+                            }
+                            return response.text();
+                        })
+                        .then(html => {
+                            mainContentArea.innerHTML = html;
+                            // Re-attach event listeners if new content also has dynamic elements or scripts
+                            if (url.includes('add_profissionais')) {
+                                if (typeof reinitializeAddProfissionaisScripts === 'function') {
+                                    reinitializeAddProfissionaisScripts();
+                                } else {
+                                    // Wait for the script in the loaded content to be parsed
+                                    setTimeout(() => {
+                                        if (typeof reinitializeAddProfissionaisScripts === 'function') {
+                                            reinitializeAddProfissionaisScripts();
+                                        }
+                                    }, 100);
+                                }
+                            }
+                            if (url.includes('horarios')) {
+                                // Similar check for horarios scripts if needed
+                                if (typeof reinitializeHorariosScripts === 'function') {
+                                    reinitializeHorariosScripts();
+                                } else {
+                                    setTimeout(() => {
+                                        if (typeof reinitializeHorariosScripts === 'function') {
+                                            reinitializeHorariosScripts();
+                                        }
+                                    }, 100);
+                                }
+                            }
+                            if (url.includes('add_servico')) {
+                                 // Similar check for add_servico scripts
+                                if (typeof reinitializeAddServicoScripts === 'function') {
+                                    reinitializeAddServicoScripts();
+                                } else {
+                                    setTimeout(() => {
+                                        if (typeof reinitializeAddServicoScripts === 'function') {
+                                            reinitializeAddServicoScripts();
+                                        }
+                                    }, 100);
+                                }
+                            }
+                        })
+                        .catch(e => {
+                            console.error("Erro ao carregar a página:", e);
+                            mainContentArea.innerHTML = "<p>Erro ao carregar o conteúdo.</p>";
+                        });
+                });
+            });
+          </script>
+        </body></html>

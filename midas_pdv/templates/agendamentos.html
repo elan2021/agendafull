@@ -1,0 +1,77 @@
+<html><head>
+        <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+        <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+        <meta charset="utf-8"/>
+        <title>Agendamentos - MidasPDV</title>
+        <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+        </head>
+        <body>
+        <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+        <div class="layout-container flex h-full grow flex-col">
+        <div class="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+        <div class="layout-content-container flex flex-col w-full max-w-6xl flex-1">
+        <div class="flex flex-wrap justify-between items-center gap-4 p-4 md:p-6 bg-white rounded-t-xl shadow-sm">
+        <h1 class="text-slate-900 text-3xl font-bold tracking-tight">Agendamentos</h1>
+        <!-- O botão de novo agendamento pode ser adicionado aqui se houver uma rota para adicionar agendamentos pela interface -->
+        <!-- <button class="flex items-center gap-2 rounded-lg bg-black px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black transition-colors duration-150">
+        <span class="material-icons">add</span>
+                        Novo Agendamento
+                      </button> -->
+        </div>
+        <div class="px-4 py-5 @container bg-white shadow-sm rounded-b-xl">
+        <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-50">
+        <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" scope="col">Serviços</th>
+        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" scope="col">Cliente</th>
+        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" scope="col">Profissional</th>
+        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" scope="col">Data</th>
+        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" scope="col">Horário</th>
+        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" scope="col">Total</th>
+        <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" scope="col">Status</th>
+        <th class="relative px-6 py-3" scope="col"><span class="sr-only">Ações</span></th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200 bg-white">
+        {% for agendamento in agendamentos %}
+        <tr>
+        <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-slate-900">{{ agendamento.servico.nome_servico if agendamento.servico else 'N/A' }}</td>
+        <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">{{ agendamento.cliente.nome_cliente if agendamento.cliente else 'N/A' }}</td>
+        <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">{{ agendamento.profissional.nome_profissional if agendamento.profissional else 'N/A' }}</td>
+        <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">{{ agendamento.data_agendamento.strftime('%d/%m/%Y') if agendamento.data_agendamento else 'N/A' }}</td>
+        <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">{{ agendamento.horario_inicio.strftime('%H:%M') if agendamento.horario_inicio else 'N/A' }}</td>
+        <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-600">R$ {{ "%.2f"|format(agendamento.valor_total) if agendamento.valor_total is not none else 'N/A' }}</td>
+        <td class="whitespace-nowrap px-6 py-4 text-sm">
+        {% if agendamento.status == 'Confirmado' %}
+        <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold leading-5 text-green-800">Confirmado</span>
+        {% elif agendamento.status == 'Pendente' %}
+        <span class="inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-semibold leading-5 text-yellow-800">Pendente</span>
+        {% elif agendamento.status == 'Cancelado' %}
+        <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold leading-5 text-red-800">Cancelado</span>
+        {% elif agendamento.status == 'Concluído' %}
+        <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold leading-5 text-blue-800">Concluído</span>
+        {% else %}
+        <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold leading-5 text-gray-800">{{ agendamento.status }}</span>
+        {% endif %}
+        </td>
+        <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+        <button class="text-slate-600 hover:text-slate-900"><span class="material-icons text-base">more_vert</span></button>
+        </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="8" class="text-center py-4 text-sm text-gray-500">Nenhum agendamento encontrado.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </body></html>

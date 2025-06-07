@@ -1,0 +1,137 @@
+<html><head>
+        <meta charset="utf-8"/>
+        <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+        <link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+        <title>Midas PDV - Login/Cadastro</title>
+        <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <style>
+              .form-container {
+                display: none;
+              }
+              .form-container.active {
+                display: block;
+              }
+              .tab-button.active {
+                border-bottom-color: #141414;
+                color: #141414;
+                font-weight: 700;
+              }
+              .tab-button {
+                border-bottom-color: transparent;
+                color: #757575;
+                font-weight: 500;
+              }
+            </style>
+        </head>
+        <body style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+        <div class="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col items-center justify-center">
+        <div class="px-4 sm:px-8 md:px-20 lg:px-40 flex flex-1 justify-center py-10 w-full">
+        <div class="layout-content-container flex flex-col bg-white shadow-lg rounded-xl w-full max-w-lg p-6 md:p-8">
+        <div class="flex justify-center mb-6">
+        <img alt="Midas PDV Logo" class="h-16" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5t1LF0zkzHMij92E9YiMvU7siZ-9EcJPr39WcoQlxr60jeZq8Log1T4-ubeEc2fGwjyPL6P5fOqA4sKPcDM_16UI5-eZjYC5lWXnAaK05UNEHA8JjzecOUbPHJhN-fQbgMB3uAFy7Zhm173GmXnzm56M2IBK5YqFhE_KeyluKIFg1gz_GXJ2rpsmx6LjY6fIXmcXbGjoW0OGugekZWmAC78ONNRSphXHHNKGq3jUhSrKx2p5o8Qrw6MnXBLQshzREjbcQQltjk4o"/>
+        </div>
+        <div class="mb-6">
+        <div class="flex border-b border-stone-200">
+        <button class="tab-button active flex-1 pb-3 pt-4 text-center text-sm leading-normal tracking-wide transition-colors duration-300 ease-in-out focus:outline-none" id="login-tab-button" onclick="showForm('login')">
+                          Login
+                        </button>
+        <button class="tab-button flex-1 pb-3 pt-4 text-center text-sm leading-normal tracking-wide transition-colors duration-300 ease-in-out focus:outline-none" id="register-tab-button" onclick="showForm('register')">
+                          Cadastro
+                        </button>
+        </div>
+        </div>
+        <div class="form-container active space-y-6" id="login-form">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <p class="text-center text-sm
+                {% if category == 'danger' %}text-red-500
+                {% elif category == 'success' %}text-green-500
+                {% elif category == 'warning' %}text-yellow-500
+                {% else %}text-blue-500
+                {% endif %}">{{ message }}</p>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('login') }}">
+        <input type="hidden" name="form_type" value="login">
+        <div>
+        <label class="block text-stone-800 text-sm font-medium leading-normal mb-2" for="login-username">Nome de usuário</label>
+        <input class="form-input flex w-full appearance-none rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-800 placeholder-stone-400 shadow-sm transition-colors duration-200 ease-in-out focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/50" id="login-username" name="login_username" placeholder="Digite seu nome de usuário" type="text" required/>
+        </div>
+        <div>
+        <label class="block text-stone-800 text-sm font-medium leading-normal mb-2" for="login-password">Senha</label>
+        <input class="form-input flex w-full appearance-none rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-800 placeholder-stone-400 shadow-sm transition-colors duration-200 ease-in-out focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/50" id="login-password" name="login_password" placeholder="Digite sua senha" type="password" required/>
+        </div>
+        <button class="flex w-full items-center justify-center rounded-lg bg-stone-900 h-12 px-6 text-white text-sm font-bold leading-normal tracking-wide shadow-md transition-colors duration-200 ease-in-out hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:ring-offset-2">
+                        Entrar
+                      </button>
+        <p class="text-center">
+        <a class="text-sm font-medium text-stone-600 underline hover:text-stone-800 transition-colors duration-200 ease-in-out" href="#">Esqueceu sua senha?</a>
+        </p>
+        </form>
+        </div>
+        <div class="form-container space-y-5" id="register-form">
+        <form method="POST" action="{{ url_for('register') }}" enctype="multipart/form-data">
+        <input type="hidden" name="form_type" value="register">
+        <div>
+        <label class="block text-stone-800 text-sm font-medium leading-normal mb-1.5" for="store-name">Nome da loja</label>
+        <input class="form-input flex w-full appearance-none rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-800 placeholder-stone-400 shadow-sm transition-colors duration-200 ease-in-out focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/50" id="store-name" name="store_name" placeholder="Digite o nome da sua loja" type="text" required/>
+        </div>
+        <div>
+        <label class="block text-stone-800 text-sm font-medium leading-normal mb-1.5" for="owner-name">Nome do proprietário</label>
+        <input class="form-input flex w-full appearance-none rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-800 placeholder-stone-400 shadow-sm transition-colors duration-200 ease-in-out focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/50" id="owner-name" name="owner_name" placeholder="Digite o nome do proprietário" type="text" required/>
+        </div>
+        <div>
+        <label class="block text-stone-800 text-sm font-medium leading-normal mb-1.5" for="photo">Foto</label>
+        <input class="form-input block w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-stone-100 file:text-stone-700 hover:file:bg-stone-200 border border-stone-300 rounded-lg cursor-pointer bg-white focus:outline-none focus:ring-2 focus:ring-stone-500/50 focus:border-stone-500" id="photo" name="photo" type="file"/>
+        <p class="mt-1 text-xs text-stone-500">Foto do proprietário ou logo da loja.</p>
+        </div>
+        <div>
+        <label class="block text-stone-800 text-sm font-medium leading-normal mb-1.5" for="register-username">Nome de usuário</label>
+        <input class="form-input flex w-full appearance-none rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-800 placeholder-stone-400 shadow-sm transition-colors duration-200 ease-in-out focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/50" id="register-username" name="register_username" placeholder="Escolha um nome de usuário" type="text" required/>
+        </div>
+        <div>
+        <label class="block text-stone-800 text-sm font-medium leading-normal mb-1.5" for="register-password">Senha</label>
+        <input class="form-input flex w-full appearance-none rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-800 placeholder-stone-400 shadow-sm transition-colors duration-200 ease-in-out focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/50" id="register-password" name="register_password" placeholder="Crie uma senha" type="password" required/>
+        </div>
+        <div>
+        <label class="block text-stone-800 text-sm font-medium leading-normal mb-1.5" for="domain">Domínio</label>
+        <div class="flex items-center">
+        <span class="inline-flex items-center px-3 text-sm text-stone-600 bg-stone-100 border border-r-0 border-stone-300 rounded-l-lg h-12">midaspdv.com.br/</span>
+        <input class="form-input flex w-full appearance-none rounded-r-lg border border-stone-300 bg-white px-4 py-3 text-stone-800 placeholder-stone-400 shadow-sm transition-colors duration-200 ease-in-out focus:border-stone-500 focus:outline-none focus:ring-2 focus:ring-stone-500/50 h-12" id="domain" name="domain" placeholder="nomedaloja" type="text" required/>
+        </div>
+        </div>
+        <button class="flex w-full items-center justify-center rounded-lg bg-stone-900 h-12 px-6 text-white text-sm font-bold leading-normal tracking-wide shadow-md transition-colors duration-200 ease-in-out hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:ring-offset-2 mt-2">
+                        Cadastrar
+                      </button>
+        </form>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        <script>
+              function showForm(formName) {
+                const loginForm = document.getElementById('login-form');
+                const registerForm = document.getElementById('register-form');
+                const loginTabButton = document.getElementById('login-tab-button');
+                const registerTabButton = document.getElementById('register-tab-button');
+                if (formName === 'login') {
+                  loginForm.classList.add('active');
+                  registerForm.classList.remove('active');
+                  loginTabButton.classList.add('active');
+                  registerTabButton.classList.remove('active');
+                } else if (formName === 'register') {
+                  loginForm.classList.remove('active');
+                  registerForm.classList.add('active');
+                  loginTabButton.classList.remove('active');
+                  registerTabButton.classList.add('active');
+                }
+              }
+              // Initialize with the login form visible
+              showForm('login');
+            </script>
+        </body></html>
