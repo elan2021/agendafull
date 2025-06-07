@@ -41,9 +41,9 @@
         <span class="material-icons">group</span>
         <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Profissionais</span>
         </div>
-        <span class="material-icons transition-transform duration-200 group-data-[open=true]/profissionais:rotate-180 group-[.is-collapsed]/sidebar:hidden">expand_more</span>
+        <span class="material-icons transition-transform duration-200 group-[.menu-open]/profissionais:rotate-180 group-[.is-collapsed]/sidebar:hidden">expand_more</span>
         </button>
-        <div class="ml-6 mt-1 hidden flex-col gap-1 group-data-[open=true]/profissionais:flex group-[.is-collapsed]/sidebar:ml-0 group-[.is-collapsed]/sidebar:items-center">
+        <div class="ml-6 mt-1 hidden flex-col gap-1 group-[.menu-open]/profissionais:flex group-[.is-collapsed]/sidebar:ml-0 group-[.is-collapsed]/sidebar:items-center">
         <a class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center group-[.is-collapsed]/sidebar:px-0 dynamic-load-link" href="{{ url_for('add_profissionais') }}" id="add-profissionais-link">
         <span class="material-icons text-base">add</span>
         <span class="group-[.is-collapsed]/sidebar:hidden">Adicionar Profissional</span>
@@ -60,9 +60,9 @@
         <span class="material-icons">cut</span>
         <span class="text-sm font-medium group-[.is-collapsed]/sidebar:hidden">Serviços</span>
         </div>
-        <span class="material-icons transition-transform duration-200 group-data-[open=true]/servicos:rotate-180 group-[.is-collapsed]/sidebar:hidden">expand_more</span>
+        <span class="material-icons transition-transform duration-200 group-[.menu-open]/servicos:rotate-180 group-[.is-collapsed]/sidebar:hidden">expand_more</span>
         </button>
-        <div class="ml-6 mt-1 hidden flex-col gap-1 group-data-[open=true]/servicos:flex group-[.is-collapsed]/sidebar:ml-0 group-[.is-collapsed]/sidebar:items-center">
+        <div class="ml-6 mt-1 hidden flex-col gap-1 group-[.menu-open]/servicos:flex group-[.is-collapsed]/sidebar:ml-0 group-[.is-collapsed]/sidebar:items-center">
         <a class="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-black hover:bg-gray-100 group-[.is-collapsed]/sidebar:justify-center group-[.is-collapsed]/sidebar:px-0 dynamic-load-link" href="{{ url_for('add_servico') }}">
         <span class="material-icons text-base">add</span>
         <span class="group-[.is-collapsed]/sidebar:hidden">Adicionar Serviço</span>
@@ -156,9 +156,11 @@
             }
                 const groupName = button.dataset.group;
                 const parentGroup = button.closest('[class*="group/"]'); // More robust selector
-            const isOpen = parentGroup.getAttribute('data-open') === 'true';
-            parentGroup.setAttribute('data-open', isOpen ? 'false' : 'true');
-            button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+            if (parentGroup) { // Ensure parentGroup is found
+              parentGroup.classList.toggle('menu-open');
+              const isNowOpen = parentGroup.classList.contains('menu-open');
+              button.setAttribute('aria-expanded', isNowOpen ? 'true' : 'false');
+            }
           });
         });
             function adjustSidebarForScreenSize() {
