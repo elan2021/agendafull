@@ -155,7 +155,7 @@
               toggleSidebar(false);
             }
                 const groupName = button.dataset.group;
-                const parentGroup = button.closest('div');
+                const parentGroup = button.closest('[class*="group/"]'); // More robust selector
             const isOpen = parentGroup.getAttribute('data-open') === 'true';
             parentGroup.setAttribute('data-open', isOpen ? 'false' : 'true');
             button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
